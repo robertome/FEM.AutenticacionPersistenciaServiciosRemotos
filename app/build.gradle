@@ -29,7 +29,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.google.firebase:firebase-auth:16.0.5'
     // https://github.com/firebase/FirebaseUI-Android/tree/master/auth
-    implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
+
+    implementation 'com.google.firebase:firebase-database:16.0.4'
+    //implementation 'com.google.firebase:firebase-storage:16.0.4'
 }
 
 // Google Services
