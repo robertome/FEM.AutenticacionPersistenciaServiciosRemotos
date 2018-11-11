@@ -20,6 +20,7 @@
     <string name="info_paquete_fecha_recogida">Fecha Recogida:</string>
     <string name="info_paquete_fecha_entrega">Fecha Entrega:</string>
     <string name="info_paquete_entregarButton_title">Entregar</string>
+    <string name="activity_actualizar_localizacion_obtenerLocalizacionButton_title">Obtener localizacion mediante Servicio REST</string>
 
     <!--
     <string name="signed_in">Signed in!</string>
@@ -28,4 +29,6 @@
 
     <string name="firebase_user_fmt">Firebase User: %s</string>
     -->
+
+    <string name="ip_test">81.36.56.152</string>
 </resources>

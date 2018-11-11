@@ -9,6 +9,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class BaseActivity extends Activity {
 
+    public static final String LOG_TAG = "MiW";
+
     private ProgressDialog progressDialog;
 
     public void showProgressDialog() {

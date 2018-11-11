@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity {
 
     private DatabaseReference paquetesDatabaseReference;
 
-    private Button actualizarLocalizacionButton;
+    private Button showActualizarLocalizacionButton;
     private PaqueteAdapter paqueteAdapter;
     private ListView paqueteListView;
     private ChildEventListener mChildEventListener;
@@ -46,9 +46,9 @@ public class MainActivity extends BaseActivity {
         paquetesDatabaseReference = FirebaseDatabase.getInstance().getReference().child("repartidores").child(getUid()).child("paquetes");
 
         paqueteListView = findViewById(R.id.paqueteListView);
-        actualizarLocalizacionButton = findViewById(R.id.actualizarLocalizacionButton);
+        showActualizarLocalizacionButton = findViewById(R.id.showActualizarLocalizacionButton);
 
-        actualizarLocalizacionButton.setOnClickListener(new View.OnClickListener() {
+        showActualizarLocalizacionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(ActualizarLocalizacionActivity.newIntent(getApplicationContext()));
@@ -68,7 +68,7 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        paqueteAdapter = new PaqueteAdapter(this,R.layout.item_paquete, new ArrayList<Paquete>());
+        paqueteAdapter = new PaqueteAdapter(this, R.layout.item_paquete, new ArrayList<Paquete>());
         paqueteListView.setAdapter(paqueteAdapter);
         if (mChildEventListener != null) {
             paquetesDatabaseReference.removeEventListener(mChildEventListener);
@@ -80,14 +80,11 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onStop() {
-        //paqueteAdapter.cleanupListener();
-
         super.onStop();
     }
 
     @Override
     protected void onPause() {
-
         super.onPause();
     }
 
@@ -117,7 +114,6 @@ public class MainActivity extends BaseActivity {
 
     }
 
-
     class PaqueteChildEventListener implements ChildEventListener {
 
         private PaqueteAdapter paqueteAdapter;
@@ -134,8 +130,6 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            Paquete paquete = dataSnapshot.getValue(Paquete.class);
-            this.paqueteAdapter.add(paquete);
         }
 
         @Override

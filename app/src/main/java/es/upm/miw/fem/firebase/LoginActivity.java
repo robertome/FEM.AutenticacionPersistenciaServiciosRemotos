@@ -19,8 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends BaseActivity {
 
-    private static final String TAG = "LoginActivity";
-
     private FirebaseAuth firebaseAuth;
 
     private EditText emailEditText;
@@ -72,7 +70,7 @@ public class LoginActivity extends BaseActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "login:onComplete:" + task.isSuccessful());
+                        Log.d(LOG_TAG, "login:onComplete:" + task.isSuccessful());
 
                         hideProgressDialog();
 
