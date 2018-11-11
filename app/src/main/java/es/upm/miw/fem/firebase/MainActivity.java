@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,101 +28,116 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import es.upm.miw.fem.BuildConfig;
-import es.upm.miw.fem.R;
-
 // Firebase
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity {
 
     final static String LOG_TAG = "MiW";
-
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-
     private static final int RC_SIGN_IN = 2018;
 
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mMessagesDatabaseReference;
-    private ChildEventListener mChildEventListener;
-
-    private ListView mMessageListView;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private PaqueteRepository repository;
+    private ChildEventListener paquetesChildEventListener;
     private PaqueteAdapter paqueteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.logoutButton).setOnClickListener(this);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+        Button actualizarLocalizacionButton = findViewById(R.id.actualizarLocalizacionButton);
+        actualizarLocalizacionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(ActualizarLocalizacionActivity.newIntent(getApplicationContext(), firebaseAuth.getCurrentUser().getUid()));
+            }
+        });
+
+        List<Paquete> paquetes = new ArrayList<>();
+        paqueteAdapter = new PaqueteAdapter(this, R.layout.item_paquete, paquetes);
+        paquetesChildEventListener = new PaqueteChildEventListener(paqueteAdapter);
+        ListView paqueteListView = findViewById(R.id.paqueteListView);
+        paqueteListView.setAdapter(paqueteAdapter);
+        paqueteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Paquete paquete = (Paquete) parent.getItemAtPosition(position);
+                startActivity(IncidenciasActivity.newIntent(getApplicationContext(), firebaseAuth.getCurrentUser().getUid(), paquete));
+            }
+        });
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // user is signed in
-                    CharSequence username = user.getDisplayName();
-                    Toast.makeText(MainActivity.this, getString(R.string.firebase_user_fmt, username), Toast.LENGTH_LONG).show();
-                    Log.i(LOG_TAG, "onAuthStateChanged() " + getString(R.string.firebase_user_fmt, username));
+                    // user is signed id
+                    onSignedInInitialize(user);
                 } else {
-                    // user is signed out
+                    // user ins signed out
+                    onSignedOutCleanup();
                     startActivityForResult(
-                            // Get an instance of AuthUI based on the default app
-                            AuthUI.getInstance().
-                                    createSignInIntentBuilder().
-                                    setAvailableProviders(Arrays.asList(
-                                            new AuthUI.IdpConfig.EmailBuilder().build()
-                                    )).
-                                    setIsSmartLockEnabled(!BuildConfig.DEBUG /* credentials */, true /* hints */).
-                                    build(),
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(Arrays.asList(new AuthUI.IdpConfig.EmailBuilder().build()))
+                                    .build(),
                             RC_SIGN_IN);
                 }
             }
         };
-
-        // Initialize message ListView and its adapter
-        List<Paquete> paquetes = new ArrayList<>();
-        paqueteAdapter = new PaqueteAdapter(this, R.layout.item_paquete, paquetes);
-        mMessageListView = (ListView) findViewById(R.id.messageListView);
-        mMessageListView.setAdapter(paqueteAdapter);
-
-        // btb Listener will be called when changes were performed in DB
-        mChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                // Deserialize data from DB into our Paquete object
-                Paquete paquete = dataSnapshot.getValue(Paquete.class);
-                paqueteAdapter.add(paquete);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        };
-
     }
-
 
     @Override
     protected void onPause() {
+        firebaseAuth.removeAuthStateListener(authStateListener);
+        if (repository != null) {
+            repository.removeChildEventListener(paquetesChildEventListener);
+        }
         super.onPause();
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    private void onSignedOutCleanup() {
+        if (repository != null) {
+            repository.removeChildEventListener(paquetesChildEventListener);
+            repository = null;
+        }
+        paqueteAdapter.clear();
+    }
+
+    private void onSignedInInitialize(FirebaseUser currentUser) {
+        Toast.makeText(MainActivity.this, getString(R.string.firebase_user_fmt, currentUser.getEmail()), Toast.LENGTH_LONG).show();
+        if (repository == null) {
+            repository = new PaqueteRepository(currentUser.getUid()).addChildEventListener(paquetesChildEventListener);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout_menu:
+                firebaseAuth.signOut();
+                //startActivity(new Intent(this, SignInActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -127,12 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, R.string.signed_in, Toast.LENGTH_SHORT).show();
                 Log.i(LOG_TAG, "onActivityResult " + getString(R.string.signed_in));
-
-                FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
-                String userId = currentUser.getUid();
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("repartidores").child(userId).child("paquetes");
-                mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+                //onSignedInInitialize(firebaseAuth.getCurrentUser());
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, R.string.signed_cancelled, Toast.LENGTH_SHORT).show();
                 Log.i(LOG_TAG, "onActivityResult " + getString(R.string.signed_cancelled));
@@ -141,14 +156,69 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    /**
-     * Called when a view has been clicked.
-     *
-     * @param v The view that was clicked.
-     */
-    @Override
-    public void onClick(View v) {
-        mFirebaseAuth.signOut();
-        Log.i(LOG_TAG, getString(R.string.signed_out));
+    static class PaqueteRepository {
+
+        FirebaseDatabase firebaseDatabase;
+        private DatabaseReference paquetesDatabaseReference;
+
+        PaqueteRepository(String userId) {
+            this.firebaseDatabase = FirebaseDatabase.getInstance();
+            this.paquetesDatabaseReference = firebaseDatabase.getReference().child("repartidores").child(userId).child("paquetes");
+        }
+
+        DatabaseReference getPaquetesDatabaseReference() {
+            return paquetesDatabaseReference;
+        }
+
+        PaqueteRepository addChildEventListener(ChildEventListener childEventListener) {
+            if (paquetesDatabaseReference != null && childEventListener != null) {
+                paquetesDatabaseReference.addChildEventListener(childEventListener);
+            }
+
+            return this;
+        }
+
+        PaqueteRepository removeChildEventListener(ChildEventListener childEventListener) {
+            if (paquetesDatabaseReference != null && childEventListener != null) {
+                paquetesDatabaseReference.removeEventListener(childEventListener);
+            }
+
+            return this;
+        }
+
     }
+
+    class PaqueteChildEventListener implements ChildEventListener {
+
+        private PaqueteAdapter paqueteAdapter;
+
+        PaqueteChildEventListener(PaqueteAdapter paqueteAdapter) {
+            this.paqueteAdapter = paqueteAdapter;
+        }
+
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            Paquete paquete = dataSnapshot.getValue(Paquete.class);
+            this.paqueteAdapter.add(paquete);
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            Paquete paquete = dataSnapshot.getValue(Paquete.class);
+            this.paqueteAdapter.add(paquete);
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    }
+
 }

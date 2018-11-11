@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="16dp"
@@ -11,24 +11,38 @@
     android:paddingTop="16dp"
     tools:context="es.upm.miw.fem.firebase.MainActivity">
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="136dp"
-        android:text="@string/logout_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messageListView" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Paquetes"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/actualizarLocalizacionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Actualizar localización" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:paddingBottom="16dp"
+        android:background="?android:attr/listDivider" />
 
     <ListView
-        android:id="@+id/messageListView"
+        android:id="@+id/paqueteListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stackFromBottom="true"
         android:divider="@android:color/transparent"
         android:transcriptMode="alwaysScroll"
         tools:listitem="@layout/item_paquete"/>
 
-</RelativeLayout>
+</LinearLayout>

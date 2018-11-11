@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="es.upm.miw.fem">
+    package="es.upm.miw.fem.firebase">
 
     <application
         android:allowBackup="true"
@@ -12,13 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="es.upm.miw.fem.firebase.MainActivity">
+
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".IncidenciasActivity"
+            android:label="Paquete"/>
+        <activity
+            android:name=".ActualizarLocalizacionActivity"
+            android:label="Actualizar localización"/>
+
     </application>
 
 </manifest>

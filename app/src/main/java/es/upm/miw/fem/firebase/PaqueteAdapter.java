@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import es.upm.miw.fem.R;
-
 public class PaqueteAdapter extends ArrayAdapter<Paquete> {
     public PaqueteAdapter(Context context, int resource, List<Paquete> objects) {
         super(context, resource, objects);
@@ -22,9 +20,15 @@ public class PaqueteAdapter extends ArrayAdapter<Paquete> {
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_paquete, parent, false);
         }
 
-        Paquete message = getItem(position);
-        TextView messageTextView = convertView.findViewById(R.id.messageTextView);
-        messageTextView.setText(message.getUid() + " " + message.getName());
+        Paquete paquete = getItem(position);
+        TextView paqueteTextView = convertView.findViewById(R.id.paqueteTextView);
+        paqueteTextView.setText(paquete.getId());
+        TextView paqueteDestinoTextView = convertView.findViewById(R.id.paqueteDestinoTextView);
+        paqueteDestinoTextView.setText(paquete.getDestino());
+        TextView paqueteEntregadoTextView = convertView.findViewById(R.id.paqueteEntregadoTextView);
+        if (paquete.isEntregado()) {
+            paqueteEntregadoTextView.setVisibility(View.VISIBLE);
+        }
 
         return convertView;
     }
