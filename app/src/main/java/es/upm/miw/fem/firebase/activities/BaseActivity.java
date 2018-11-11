@@ -1,4 +1,4 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

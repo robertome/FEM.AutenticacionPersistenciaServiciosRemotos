@@ -1,4 +1,4 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import es.upm.miw.fem.firebase.R;
+import es.upm.miw.fem.firebase.models.Paquete;
+
 public class MainActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 2018;
@@ -31,7 +34,7 @@ public class MainActivity extends BaseActivity {
     private Button showActualizarLocalizacionButton;
     private PaqueteAdapter paqueteAdapter;
     private ListView paqueteListView;
-    private ChildEventListener mChildEventListener;
+    private ChildEventListener childEventListener;
 
 
     public static Intent newIntent(Context context) {
@@ -70,12 +73,12 @@ public class MainActivity extends BaseActivity {
 
         paqueteAdapter = new PaqueteAdapter(this, R.layout.item_paquete, new ArrayList<Paquete>());
         paqueteListView.setAdapter(paqueteAdapter);
-        if (mChildEventListener != null) {
-            paquetesDatabaseReference.removeEventListener(mChildEventListener);
+        if (childEventListener != null) {
+            paquetesDatabaseReference.removeEventListener(childEventListener);
         }
 
-        mChildEventListener = new PaqueteChildEventListener(paqueteAdapter);
-        paquetesDatabaseReference.addChildEventListener(mChildEventListener);
+        childEventListener = new PaqueteChildEventListener(paqueteAdapter);
+        paquetesDatabaseReference.addChildEventListener(childEventListener);
     }
 
     @Override
@@ -114,7 +117,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    class PaqueteChildEventListener implements ChildEventListener {
+    static class PaqueteChildEventListener implements ChildEventListener {
 
         private PaqueteAdapter paqueteAdapter;
 

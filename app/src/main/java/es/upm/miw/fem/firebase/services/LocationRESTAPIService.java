@@ -1,4 +1,4 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.services;
 
 
 import es.upm.miw.fem.firebase.models.InfoLocation;

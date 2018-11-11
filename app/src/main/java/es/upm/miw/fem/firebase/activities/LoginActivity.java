@@ -1,4 +1,4 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import es.upm.miw.fem.firebase.R;
 
 public class LoginActivity extends BaseActivity {
 

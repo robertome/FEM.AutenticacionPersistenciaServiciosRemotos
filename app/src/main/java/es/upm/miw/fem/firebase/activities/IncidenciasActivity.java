@@ -1,4 +1,4 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,15 +25,18 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import es.upm.miw.fem.firebase.R;
+import es.upm.miw.fem.firebase.models.Incidencia;
+import es.upm.miw.fem.firebase.models.Paquete;
+
 public class IncidenciasActivity extends BaseActivity {
 
     private static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
-    private static final String KEY_REPARTIDOR_ID = "KEY_REPARTIDOR_ID";
-    private static final String KEY_PAQUETE = "KEY_PAQUETE";
+    private static final String KEY_PAQUETE = "IncidenciasActivity.KEY_PAQUETE";
 
     private DatabaseReference paqueteDatabaseReference;
     private DatabaseReference incidenciasDatabaseReference;
-    private ChildEventListener mChildEventListener;
+    private ChildEventListener childEventListener;
 
 
     private TextView infoPaqueteIdTextView;
@@ -124,16 +130,16 @@ public class IncidenciasActivity extends BaseActivity {
 
         IncidenciaAdapter incidenciaAdapter = new IncidenciaAdapter(this, R.layout.item_incidencia, new ArrayList<Incidencia>());
         incidenciaListView.setAdapter(incidenciaAdapter);
-        mChildEventListener = new IncidenciaChildEventListener(incidenciaAdapter);
-        incidenciasDatabaseReference.addChildEventListener(mChildEventListener);
+        childEventListener = new IncidenciaChildEventListener(incidenciaAdapter);
+        incidenciasDatabaseReference.addChildEventListener(childEventListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        if (mChildEventListener != null) {
-            incidenciasDatabaseReference.removeEventListener(mChildEventListener);
+        if (childEventListener != null) {
+            incidenciasDatabaseReference.removeEventListener(childEventListener);
         }
     }
 
@@ -169,7 +175,24 @@ public class IncidenciasActivity extends BaseActivity {
         incidenciasDatabaseReference.child(incidencia.getId()).setValue(incidencia);
     }
 
-    class IncidenciaChildEventListener implements ChildEventListener {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_paquete, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.localizaciones_menu == item.getItemId()) {
+            startActivity(LocalizacionesActivity.newIntent(getApplicationContext(), paquete));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    static class IncidenciaChildEventListener implements ChildEventListener {
 
         private IncidenciaAdapter incidenciaAdapter;
 

@@ -1,11 +1,12 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
+import es.upm.miw.fem.firebase.utils.DateToStringConverter;
+import es.upm.miw.fem.firebase.utils.LongToDateConverter;
 
 @IgnoreExtraProperties
 public class Paquete implements Serializable {
@@ -15,7 +16,6 @@ public class Paquete implements Serializable {
     private Long fechaEntrega;
     private String origen;
     private String destino;
-    private List<Incidencia> incidencias = new ArrayList<>();
 
     public Paquete() {
         // Default constructor required for calls to DataSnapshot.getValue(class)
@@ -83,11 +83,6 @@ public class Paquete implements Serializable {
 
     public String fechaEntregaAsString() {
         return new DateToStringConverter().convert(fechaEntregaAsDate());
-    }
-
-    public void add(Incidencia incidencia) {
-        incidencia.setPaqueteId(this.id);
-        incidencias.add(incidencia);
     }
 
 }

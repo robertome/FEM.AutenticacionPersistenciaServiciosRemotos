@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/logout_menu"
-        android:title="@string/logout_button"
+        android:id="@+id/localizaciones_menu"
+        android:title="@string/activity_incidencias_ver_localizaciones"
         app:showAsAction="always|withText" />
 </menu>

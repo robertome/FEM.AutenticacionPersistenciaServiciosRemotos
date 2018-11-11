@@ -11,15 +11,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="es.upm.miw.fem.firebase.activities.IncidenciasActivity">
 
-    <!--<include layout="@layout/info_paquete_table" />-->
-    <include layout="@layout/info_paquete_linear" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/activity_incidencias_header" />
+        android:text="@string/activity_localizaciones_localizaciones_intermedias_header" />
 
     <View
         android:id="@+id/divider"
@@ -28,34 +25,12 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:background="?android:attr/listDivider" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/incidenciaEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/incidenciaSendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:enabled="false"
-            android:text="@string/activity_incidencias_sendButton_title"/>
-
-    </LinearLayout>
-
     <ListView
-        android:id="@+id/incidenciaListView"
+        android:id="@+id/localizacionesListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
         android:transcriptMode="alwaysScroll"
-        tools:listitem="@layout/item_incidencia"/>
+        tools:listitem="@layout/item_localizacion"/>
 
 </LinearLayout>

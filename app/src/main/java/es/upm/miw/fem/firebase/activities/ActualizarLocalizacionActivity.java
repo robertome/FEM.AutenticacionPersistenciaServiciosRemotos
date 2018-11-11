@@ -1,4 +1,4 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +19,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import es.upm.miw.fem.firebase.R;
 import es.upm.miw.fem.firebase.models.InfoLocation;
+import es.upm.miw.fem.firebase.models.Paquete;
+import es.upm.miw.fem.firebase.services.LocationService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

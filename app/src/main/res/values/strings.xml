@@ -11,6 +11,7 @@
 
     <string name="activity_incidencias_header">Incidencias</string>
     <string name="activity_incidencias_sendButton_title">Enviar</string>
+    <string name="activity_incidencias_ver_localizaciones">Ver localizaciones</string>
 
     <string name="activity_actualizar_localizacion_actualizarButton_title">Actualizar</string>
 
@@ -22,6 +23,8 @@
     <string name="info_paquete_entregarButton_title">Entregar</string>
     <string name="activity_actualizar_localizacion_obtenerLocalizacionButton_title">Obtener localizacion mediante Servicio REST</string>
 
+    <string name="activity_localizaciones_localizaciones_intermedias_header">Localizaciones intermedias</string>
+
     <!--
     <string name="signed_in">Signed in!</string>
     <string name="signed_out">Signed out!</string>
@@ -31,4 +34,5 @@
     -->
 
     <string name="ip_test">81.36.56.152</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.List;
+
+import es.upm.miw.fem.firebase.R;
+import es.upm.miw.fem.firebase.models.Incidencia;
 
 public class IncidenciaAdapter extends ArrayAdapter<Incidencia> {
 

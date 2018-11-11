@@ -1,12 +1,15 @@
-package es.upm.miw.fem.firebase;
+package es.upm.miw.fem.firebase.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import es.upm.miw.fem.firebase.utils.DateToStringConverter;
+import es.upm.miw.fem.firebase.utils.LongToDateConverter;
+
 @IgnoreExtraProperties
-class Incidencia implements Serializable {
+public class Incidencia implements Serializable {
 
     private String id;
     private String descripcion;
