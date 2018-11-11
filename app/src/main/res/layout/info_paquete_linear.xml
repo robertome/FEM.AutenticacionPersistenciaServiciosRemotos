@@ -7,70 +7,70 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Id:"
+        android:text="@string/info_paquete_id"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/infoPaqueteIdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:text="_"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Origen:"
+        android:text="@string/info_paquete_origen"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/infoPaqueteOrigenTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:text="_"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Destino:"
+        android:text="@string/info_paquete_destino"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/infoPaqueteDestinoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:text="_"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fecha Recogida:"
+        android:text="@string/info_paquete_fecha_recogida"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/infoPaqueteFechaRecogidaTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:text="_"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fecha Entrega:"
+        android:text="@string/info_paquete_fecha_entrega"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/infoPaqueteFechaEntregaTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:text="_"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -78,6 +78,6 @@
         android:id="@+id/paqueteEntregarButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Entregar" />
+        android:text="@string/info_paquete_entregarButton_title" />
 
 </LinearLayout>

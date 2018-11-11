@@ -1,6 +1,5 @@
 package es.upm.miw.fem.firebase;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,9 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class IncidenciasActivity extends Activity {
+public class IncidenciasActivity extends BaseActivity {
 
     private static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
     private static final String KEY_REPARTIDOR_ID = "KEY_REPARTIDOR_ID";
@@ -34,8 +32,6 @@ public class IncidenciasActivity extends Activity {
     private DatabaseReference incidenciasDatabaseReference;
     private ChildEventListener mChildEventListener;
 
-    private Paquete paquete;
-    private String repartidorId;
 
     private TextView infoPaqueteIdTextView;
     private TextView infoPaqueteOrigenTextView;
@@ -47,9 +43,10 @@ public class IncidenciasActivity extends Activity {
     private EditText incidenciaEditText;
     private Button incidenciaSendButton;
 
-    public static Intent newIntent(Context context, String uid, Paquete paquete) {
+    private Paquete paquete;
+
+    public static Intent newIntent(Context context, Paquete paquete) {
         Intent intent = new Intent(context, IncidenciasActivity.class);
-        intent.putExtra(KEY_REPARTIDOR_ID, uid);
         intent.putExtra(KEY_PAQUETE, paquete);
 
         return intent;
@@ -59,6 +56,12 @@ public class IncidenciasActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incidencias);
+
+        Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
+        recoverBundleParameters(bundle);
+
+        paqueteDatabaseReference = FirebaseDatabase.getInstance().getReference().child("repartidores").child(getUid()).child("paquetes").child(paquete.getId());
+        incidenciasDatabaseReference = paqueteDatabaseReference.child("incidencias");
 
         infoPaqueteIdTextView = findViewById(R.id.infoPaqueteIdTextView);
         infoPaqueteOrigenTextView = findViewById(R.id.infoPaqueteOrigenTextView);
@@ -71,9 +74,6 @@ public class IncidenciasActivity extends Activity {
         incidenciaEditText = findViewById(R.id.incidenciaEditText);
         incidenciaSendButton = findViewById(R.id.incidenciaSendButton);
 
-        Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
-        recoverBundleParameters(bundle);
-
         paqueteEntregarButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -82,17 +82,9 @@ public class IncidenciasActivity extends Activity {
 
                 updateUI();
 
-                MainActivity.PaqueteRepository repository = new MainActivity.PaqueteRepository(repartidorId);
-                repository.getPaquetesDatabaseReference().child(paquete.getId()).child("fechaEntrega").setValue(paquete.getFechaEntrega());
+                paqueteDatabaseReference.child("fechaEntrega").setValue(paquete.getFechaEntrega());
             }
         });
-
-        List<Incidencia> incidencias = new ArrayList<>();
-        IncidenciaAdapter incidenciaAdapter = new IncidenciaAdapter(this, R.layout.item_incidencia, incidencias);
-        incidenciaListView.setAdapter(incidenciaAdapter);
-        mChildEventListener = new IncidenciaChildEventListener(incidenciaAdapter);
-
-        setupDataBaseReference();
 
         incidenciaEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
         incidenciaEditText.addTextChangedListener(new TextWatcher() {
@@ -127,6 +119,25 @@ public class IncidenciasActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        IncidenciaAdapter incidenciaAdapter = new IncidenciaAdapter(this, R.layout.item_incidencia, new ArrayList<Incidencia>());
+        incidenciaListView.setAdapter(incidenciaAdapter);
+        mChildEventListener = new IncidenciaChildEventListener(incidenciaAdapter);
+        incidenciasDatabaseReference.addChildEventListener(mChildEventListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mChildEventListener != null) {
+            incidenciasDatabaseReference.removeEventListener(mChildEventListener);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(KEY_PAQUETE, paquete);
         super.onSaveInstanceState(outState);
@@ -141,7 +152,6 @@ public class IncidenciasActivity extends Activity {
 
     private void recoverBundleParameters(Bundle bundle) {
         paquete = (Paquete) bundle.getSerializable(KEY_PAQUETE);
-        repartidorId = bundle.getString(KEY_REPARTIDOR_ID);
     }
 
     private void updateUI() {
@@ -152,12 +162,6 @@ public class IncidenciasActivity extends Activity {
         infoPaqueteFechaEntregaTextView.setText(paquete.fechaEntregaAsString());
         paqueteEntregarButton.setEnabled(!paquete.isEntregado());
         incidenciaEditText.setEnabled(!paquete.isEntregado());
-    }
-
-    private void setupDataBaseReference() {
-        paqueteDatabaseReference = FirebaseDatabase.getInstance().getReference().child("repartidores").child(repartidorId).child("paquetes").child(paquete.getId());
-        incidenciasDatabaseReference = paqueteDatabaseReference.child("incidencias");
-        incidenciasDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
     private void saveIncidencia(String descripcion) {

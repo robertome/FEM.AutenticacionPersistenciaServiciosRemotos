@@ -4,9 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    tools:context="es.upm.miw.fem.firebase.ActualizarLocalizacionActivity">
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <EditText
         android:id="@+id/localizacionEditText"
@@ -21,6 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:enabled="false"
-        android:text="Actualizar" />
+        android:text="@string/activity_actualizar_localizacion_actualizarButton_title" />
 
 </LinearLayout>

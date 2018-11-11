@@ -1,9 +1,31 @@
 <resources>
     <string name="app_name">Repartos</string>
+    <string name="hint_password">password</string>
+    <string name="hint_email">email</string>
+    <string name="sign_in">Log In</string>
+    <string name="logout_button">Log Out</string>
 
+    <string name="item_paquete_entregado">Entregado</string>
+    <string name="activity_main_header">Paquetes</string>
+    <string name="activity_main_actualizarLocalizacionButton_title">Actualizar localización</string>
+
+    <string name="activity_incidencias_header">Incidencias</string>
+    <string name="activity_incidencias_sendButton_title">Enviar</string>
+
+    <string name="activity_actualizar_localizacion_actualizarButton_title">Actualizar</string>
+
+    <string name="info_paquete_id">Id:</string>
+    <string name="info_paquete_origen">Origen:</string>
+    <string name="info_paquete_destino">Destino:</string>
+    <string name="info_paquete_fecha_recogida">Fecha Recogida:</string>
+    <string name="info_paquete_fecha_entrega">Fecha Entrega:</string>
+    <string name="info_paquete_entregarButton_title">Entregar</string>
+
+    <!--
     <string name="signed_in">Signed in!</string>
     <string name="signed_out">Signed out!</string>
     <string name="signed_cancelled">Signed in cancelled</string>
-    <string name="logout_button">Logout</string>
+
     <string name="firebase_user_fmt">Firebase User: %s</string>
+    -->
 </resources>

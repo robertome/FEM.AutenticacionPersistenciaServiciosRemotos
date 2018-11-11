@@ -1,6 +1,5 @@
 package es.upm.miw.fem.firebase;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,24 +12,22 @@ import android.widget.EditText;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class ActualizarLocalizacionActivity extends Activity {
+public class ActualizarLocalizacionActivity extends BaseActivity {
 
     private static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
-    private static final String KEY_REPARTIDOR_ID = "KEY_REPARTIDOR_ID";
+
+    private DatabaseReference paquetesDatabaseReference;
 
     private EditText localizacionEditText;
     private Button actualizarLocalizacionSendButton;
 
-    private String repartidorId;
-
-    public static Intent newIntent(Context context, String uid) {
-        Intent intent = new Intent(context, ActualizarLocalizacionActivity.class);
-        intent.putExtra(KEY_REPARTIDOR_ID, uid);
-
-        return intent;
+    public static Intent newIntent(Context context) {
+        return new Intent(context, ActualizarLocalizacionActivity.class);
     }
 
     @Override
@@ -38,8 +35,7 @@ public class ActualizarLocalizacionActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actualizar_localizacion);
 
-        Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
-        recoverBundleParameters(bundle);
+        paquetesDatabaseReference = FirebaseDatabase.getInstance().getReference().child("repartidores").child(getUid()).child("paquetes");
 
         localizacionEditText = findViewById(R.id.localizacionEditText);
         actualizarLocalizacionSendButton = findViewById(R.id.actualizarLocalizacionSendButton);
@@ -75,14 +71,15 @@ public class ActualizarLocalizacionActivity extends Activity {
 
     private void submitLocalizacion() {
         final String localizacion = localizacionEditText.getText().toString();
-        final MainActivity.PaqueteRepository repository = new MainActivity.PaqueteRepository(repartidorId);
-        Query paquetesNoEntregadosQuery = repository.getPaquetesDatabaseReference().orderByChild("fechaEntrega").equalTo(null);
+
+        Query paquetesNoEntregadosQuery = paquetesDatabaseReference.orderByChild("fechaEntrega").equalTo(null);
         paquetesNoEntregadosQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot paqueteSnapshot : dataSnapshot.getChildren()) {
                     Paquete paquete = paqueteSnapshot.getValue(Paquete.class);
-                    repository.getPaquetesDatabaseReference().child(paquete.getId()).child("localizaciones").push().setValue(localizacion);
+
+                    paquetesDatabaseReference.child(paquete.getId()).child("localizaciones").push().setValue(localizacion);
                 }
             }
 
@@ -95,19 +92,4 @@ public class ActualizarLocalizacionActivity extends Activity {
         finish();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(KEY_REPARTIDOR_ID, repartidorId);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        recoverBundleParameters(savedInstanceState);
-    }
-
-    private void recoverBundleParameters(Bundle bundle) {
-        repartidorId = bundle.getString(KEY_REPARTIDOR_ID);
-    }
 }
